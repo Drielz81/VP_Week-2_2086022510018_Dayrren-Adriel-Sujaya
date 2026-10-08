@@ -4,11 +4,7 @@ import '../../domain/entities/series.dart';
 import 'watch_progress.dart';
 
 class SeriesCard extends StatelessWidget {
-  const SeriesCard({
-    super.key,
-    required this.series,
-    required this.onTap,
-  });
+  const SeriesCard({super.key, required this.series, required this.onTap});
 
   final Series series;
   final VoidCallback onTap;
@@ -28,14 +24,16 @@ class SeriesCard extends StatelessWidget {
             children: [
               Text(
                 series.title,
-                style: theme.textTheme.titleMedium,
+                style: theme.textTheme.titleLarge,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               Text(
                 '${series.seriesStatus.label} • ${series.watchStatus.label}',
-                style: theme.textTheme.labelMedium,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 8),
               Wrap(
