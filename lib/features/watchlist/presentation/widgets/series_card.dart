@@ -34,6 +34,8 @@ class SeriesCard extends StatelessWidget {
                 style: theme.textTheme.labelMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 8),
               Wrap(

@@ -5,12 +5,13 @@ import '../../domain/entities/genre.dart';
 import '../../domain/entities/series.dart';
 import '../../domain/entities/watch_status.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/filter_chip_row.dart';
 import '../widgets/series_card.dart';
-import '../widgets/series_search_field.dart';
+import '../widgets/series_filters.dart';
 
 class SeriesListPage extends StatefulWidget {
-  const SeriesListPage({super.key});
+  const SeriesListPage({super.key, required this.loadSeries});
+
+  final Future<List<Series>> Function() loadSeries;
 
   @override
   State<SeriesListPage> createState() => _SeriesListPageState();
@@ -38,10 +39,11 @@ class _SeriesListPageState extends State<SeriesListPage> {
   }
 
   Future<void> _loadSeries() async {
-    await Future<void>.delayed(const Duration(milliseconds: 800));
+    setState(() => _isLoading = true);
+    final series = await widget.loadSeries();
     if (!mounted) return;
     setState(() {
-      _series = dummySeries;
+      _series = series;
       _isLoading = false;
     });
   }
@@ -69,76 +71,116 @@ class _SeriesListPageState extends State<SeriesListPage> {
     });
   }
 
-  @override
+  static const double _wideBreakpoint = 600;
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Donghua Watchlist')),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                SeriesSearchField(
-                  controller: _searchController,
-                  onChanged: (value) => setState(() => _query = value),
-                ),
-                const SizedBox(height: 8),
-                FilterChipRow<WatchStatus>(
-                  options: WatchStatus.values,
-                  selected: _watchStatus,
-                  labelOf: (status) => status.label,
-                  onSelected: (status) => setState(() => _watchStatus = status),
-                ),
-                const SizedBox(height: 8),
-                FilterChipRow<Genre>(
-                  options: Genre.values,
-                  selected: _genre,
-                  labelOf: (genre) => genre.label,
-                  onSelected: (genre) => setState(() => _genre = genre),
-                ),
-              ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWide = constraints.maxWidth >= _wideBreakpoint;
+          final filters = SizedBox(
+            child: SeriesFilters(
+              searchController: _searchController,
+              watchStatus: _watchStatus,
+              genre: _genre,
+              onQueryChanged: (value) => setState(() => _query = value),
+              onWatchStatusChanged: (status) =>
+                  setState(() => _watchStatus = status),
+              onGenreChanged: (genre) => setState(() => _genre = genre),
+              wrapChips: isWide,
             ),
-          ),
-          const SizedBox(height: 8),
-          Expanded(child: _buildContent()),
-        ],
+          );
+
+          if (isWide) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: 320,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: filters,
+                  ),
+                ),
+                const VerticalDivider(width: 1),
+                Expanded(child: CustomScrollView(slivers: _buildSlivers())),
+              ],
+            );
+          }
+
+          return CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                sliver: SliverToBoxAdapter(child: filters),
+              ),
+              ..._buildSlivers(),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildContent() {
+  List<Widget> _buildSlivers() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ];
     }
+
     if (_series.isEmpty) {
-      return const EmptyState(
-        icon: Icons.video_library_outlined,
-        title: 'Your watchlist is empty',
-        message: 'Series you add will show up here.',
-      );
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: EmptyState(
+            icon: Icons.video_library_outlined,
+            title: 'Your watchlist is empty',
+            message: 'Series you add will show up here.',
+            actionLabel: 'Reload',
+            onAction: _loadSeries,
+          ),
+        ),
+      ];
     }
 
     final visible = _visibleSeries;
     if (visible.isEmpty) {
-      return EmptyState(
-        icon: Icons.search_off,
-        title: 'No series found',
-        message: _query.isEmpty
-            ? 'No series match the selected filters.'
-            : 'No series match "$_query".',
-        onReset: _hasActiveFilter ? _resetFilters : null,
-      );
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: EmptyState(
+            icon: Icons.search_off,
+            title: 'No series found',
+            message: _query.isEmpty
+                ? 'No series match the selected filters.'
+                : 'No series match "$_query".',
+            actionLabel: 'Clear filters',
+            onAction: _resetFilters,
+          ),
+        ),
+      ];
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      itemCount: visible.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 8),
-      itemBuilder: (context, index) => SeriesCard(
-        series: visible[index],
-        onTap: () {},
+    return [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        sliver: SliverList.separated(
+          itemCount: visible.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          itemBuilder: (context, index) => SeriesCard(
+            series: visible[index],
+            onTap: () {},
+          ),
+        ),
       ),
-    );
+    ];
   }
+
+  
 }

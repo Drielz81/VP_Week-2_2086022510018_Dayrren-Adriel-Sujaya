@@ -153,3 +153,8 @@ const List<Series> dummySeries = [
     watchedEpisodes: 13,
   ),
 ];
+
+Future<List<Series>> loadDummySeries() async {
+  await Future<void>.delayed(const Duration(milliseconds: 800));
+  return dummySeries;
+}

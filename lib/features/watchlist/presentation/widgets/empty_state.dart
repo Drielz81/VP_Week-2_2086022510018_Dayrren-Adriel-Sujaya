@@ -6,13 +6,15 @@ class EmptyState extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.message,
-    this.onReset,
+    required this.actionLabel,
+    required this.onAction,
   });
 
   final IconData icon;
   final String title;
   final String message;
-  final VoidCallback? onReset;
+  final String actionLabel;
+  final VoidCallback onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -34,20 +36,22 @@ class EmptyState extends StatelessWidget {
               title,
               style: theme.textTheme.titleMedium,
               textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8),
             Text(
               message,
               style: theme.textTheme.bodyMedium,
               textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
             ),
-            if (onReset != null) ...[
-              const SizedBox(height: 16),
-              FilledButton.tonal(
-                onPressed: onReset,
-                child: const Text('Clear filters'),
-              ),
-            ],
+            const SizedBox(height: 16),
+            FilledButton.tonal(
+              onPressed: onAction,
+              child: Text(actionLabel),
+            ),
           ],
         ),
       ),
