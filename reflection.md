@@ -1,0 +1,3 @@
+1.  pemetaan semua file berdasarkan fungsional sangat membantu untuk navigasi tiap fitur/warna/komponen-komponen agar mudah dilacak
+2. design tampilan appnya. hal yang akan saya lakukan berbeda adalah lebih mendalami widget flutter agar lebih mudah memahami tiap fungsi dari tiap widgetnya
+3. State aplikasi saya masih disimpan secara lokal dalam _LoginPageState dan _SignUpPageState menggunakan TextEditingController dan GlobalKey<FormState>. jadi data user tidak bertahan setelah berpindah halaman.

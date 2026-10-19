@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/series.dart';
 
 class WatchProgressBar extends StatelessWidget {
-  const WatchProgressBar({
-    super.key,
-    required this.series,
-  });
+  const WatchProgressBar({super.key, required this.series});
 
   final Series series;
 

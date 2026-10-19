@@ -14,7 +14,7 @@ class SeriesSearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return SearchBar(
       controller: controller,
-      hintText: 	'Search series',
+      hintText: 'Search series',
       leading: const Icon(Icons.search),
       trailing: [
         if (controller.text.isNotEmpty)

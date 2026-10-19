@@ -137,7 +137,8 @@ const List<Series> dummySeries = [
   ),
   Series(
     id: '15',
-    title: 'The Chronicles of the Nameless Sect Elder Who Ascended '
+    title:
+        'The Chronicles of the Nameless Sect Elder Who Ascended '
         'Beyond the Nine Heavens and Forgot His Own Name',
     genres: [
       Genre.xianxia,

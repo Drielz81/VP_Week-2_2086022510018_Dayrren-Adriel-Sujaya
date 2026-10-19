@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:week2/features/watchlist/data/dummy_data.dart';
 
-import '../../data/dummy_data.dart';
 import '../../domain/entities/genre.dart';
 import '../../domain/entities/series.dart';
 import '../../domain/entities/watch_status.dart';
@@ -9,7 +9,9 @@ import '../widgets/series_card.dart';
 import '../widgets/series_filters.dart';
 
 class SeriesListPage extends StatefulWidget {
-  const SeriesListPage({super.key, required this.loadSeries});
+  static MaterialPageRoute<dynamic> route() =>
+      MaterialPageRoute(builder: (context) => const SeriesListPage());
+  const SeriesListPage({super.key, this.loadSeries = loadDummySeries});
 
   final Future<List<Series>> Function() loadSeries;
 
@@ -48,8 +50,6 @@ class _SeriesListPageState extends State<SeriesListPage> {
     });
   }
 
-  bool get _hasActiveFilter =>
-      _query.isNotEmpty || _watchStatus != null || _genre != null;
 
   List<Series> get _visibleSeries {
     final query = _query.trim().toLowerCase();
@@ -73,7 +73,7 @@ class _SeriesListPageState extends State<SeriesListPage> {
 
   static const double _wideBreakpoint = 600;
 
-    @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Donghua Watchlist')),
@@ -172,15 +172,11 @@ class _SeriesListPageState extends State<SeriesListPage> {
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         sliver: SliverList.separated(
           itemCount: visible.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemBuilder: (context, index) => SeriesCard(
-            series: visible[index],
-            onTap: () {},
-          ),
+          separatorBuilder: (_, _) => const SizedBox(height: 8),
+          itemBuilder: (context, index) =>
+              SeriesCard(series: visible[index], onTap: () {}),
         ),
       ),
     ];
   }
-
-  
 }

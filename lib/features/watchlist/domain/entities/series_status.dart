@@ -4,6 +4,4 @@ enum SeriesStatus {
 
   final String label;
   const SeriesStatus(this.label);
-
-
 }

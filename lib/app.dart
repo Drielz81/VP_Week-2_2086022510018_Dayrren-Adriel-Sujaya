@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+// import 'package:week2/features/auth/presentation/pages/login_page.dart';
+import 'package:week2/features/auth/presentation/pages/sign_up_page.dart';
 
 import 'core/theme/app_theme.dart';
 import 'features/watchlist/domain/entities/series.dart';
-import 'features/watchlist/presentation/pages/series_list_page.dart';
+
+// import 'features/auth/presentation/pages/sign_up_page.dart';
 
 class DonghuaWatchlistApp extends StatelessWidget {
   const DonghuaWatchlistApp({
@@ -17,11 +20,12 @@ class DonghuaWatchlistApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Donghua Watchlist',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
-      home: SeriesListPage(loadSeries: loadSeries),
+      home: const SignUpPage(),
     );
   }
 }
